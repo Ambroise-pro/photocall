@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#1d2a78">
+  <title>Photocall Soirée Santé</title>
+  <link rel="preload" href="fonts/baloo-2-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Photocall">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="assets/icon-180.png">
+  <link rel="icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- 1. Choix du nombre de badges -->
+  <section id="screen-home" class="screen active" aria-labelledby="home-title">
+    <img class="home-frame" src="assets/cadre.webp" alt="">
+    <div class="card">
+      <h1 id="home-title">Combien de badges avez-vous validés ce soir&nbsp;?</h1>
+      <div id="badge-grid" class="badge-grid" role="group" aria-label="Nombre de badges"></div>
+      <button id="btn-start" class="btn btn-primary btn-xl" disabled>📸 Prendre la photo</button>
+    </div>
+    <button id="btn-fullscreen" class="btn-ghost" title="Plein écran" aria-label="Plein écran">⛶</button>
+    <a href="admin/" class="btn-ghost btn-admin" title="Gestion des photos" aria-label="Gestion des photos">⚙</a>
+  </section>
+
+  <!-- 2. Caméra -->
+  <section id="screen-camera" class="screen" aria-label="Prise de vue">
+    <div class="stage">
+      <canvas id="live" width="1536" height="1024"></canvas>
+      <div id="countdown" class="countdown" aria-live="assertive"></div>
+      <div id="flash" class="flash"></div>
+    </div>
+    <div class="toolbar">
+      <button id="btn-back" class="btn btn-light">← Retour</button>
+      <button id="btn-shoot" class="btn btn-primary btn-xl">📸 Clic !</button>
+      <span class="spacer"></span>
+    </div>
+    <p id="camera-error" class="error" hidden></p>
+  </section>
+
+  <!-- 3. Validation -->
+  <section id="screen-review" class="screen" aria-label="Validation de la photo">
+    <div class="review">
+      <img id="result" class="result" alt="Votre photo">
+      <form id="review-form" class="card form" novalidate>
+        <h2>Votre photo vous plaît&nbsp;?</h2>
+
+        <label class="check">
+          <input type="checkbox" id="consent">
+          <span>J'autorise la publication de cette photo sur les réseaux sociaux de l'école
+            et du Pass Sport Santé. <small>Facultatif : sans votre accord, elle ne sera pas publiée.</small></span>
+        </label>
+
+        <div id="mail-block">
+          <label for="email" class="label">Recevoir la photo par e-mail <small>(facultatif)</small></label>
+          <input type="email" id="email" inputmode="email" autocomplete="off" autocapitalize="off"
+                 spellcheck="false" placeholder="votre.adresse@exemple.fr">
+          <small class="hint">Votre adresse sert uniquement à l'envoi de la photo et n'est pas conservée.</small>
+        </div>
+
+        <p id="form-error" class="error" hidden></p>
+
+        <div class="actions">
+          <button type="button" id="btn-retake" class="btn btn-light">↺ Reprendre</button>
+          <button type="submit" id="btn-validate" class="btn btn-primary">✔ Valider</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- 4. Merci -->
+  <section id="screen-done" class="screen" aria-live="polite">
+    <div class="card done">
+      <div class="big-emoji">🎉</div>
+      <h2>Merci et bravo&nbsp;!</h2>
+      <p id="done-msg"></p>
+      <button id="btn-new" class="btn btn-primary btn-xl">Nouvelle photo</button>
+    </div>
+  </section>
+
+  <script src="db.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

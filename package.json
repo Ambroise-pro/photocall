@@ -1,0 +1,26 @@
+{
+  "name": "photocall",
+  "version": "1.0.0",
+  "description": "Photocall web pour les soirées santé : cadre + nombre de badges, photos stockées uniquement sur l'iPad, envoi par e-mail",
+  "main": "server.js",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ambroise-pro/photocall.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ambroise-pro/photocall/issues"
+  },
+  "homepage": "https://github.com/Ambroise-pro/photocall#readme",
+  "dependencies": {
+    "nodemailer": "^10.6.0"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  }
+}

@@ -1,0 +1,203 @@
+@font-face {
+  font-family: "Baloo 2";
+  font-weight: 700;
+  src: url("fonts/baloo-2-latin-700-normal.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Baloo 2";
+  font-weight: 800;
+  src: url("fonts/baloo-2-latin-800-normal.woff2") format("woff2");
+  font-display: swap;
+}
+
+:root {
+  --navy: #1d2a78;
+  --blue: #1f7fd6;
+  --teal: #15a6a0;
+  --green: #5cb83a;
+  --orange: #f7a417;
+  --red: #e5322d;
+  --bg: #eef6fb;
+  --card: #ffffff;
+  --text: #1b2350;
+  --muted: #5b6488;
+  --radius: 22px;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  font-family: "Baloo 2", system-ui, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 10% 10%, #fff6e0 0, transparent 40%),
+    radial-gradient(circle at 90% 90%, #e2f6e9 0, transparent 40%),
+    var(--bg);
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.screen {
+  position: fixed;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  gap: 16px;
+}
+.screen.active { display: flex; }
+[hidden] { display: none !important; }
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 40px rgba(29, 42, 120, .15);
+  padding: clamp(18px, 3vw, 36px);
+}
+
+h1, h2 { margin: 0 0 .4em; color: var(--navy); line-height: 1.1; font-weight: 800; }
+h1 { font-size: clamp(26px, 4vw, 46px); text-align: center; }
+h2 { font-size: clamp(24px, 3vw, 36px); }
+
+/* ---------- Accueil ---------- */
+#screen-home { justify-content: center; }
+.home-frame {
+  height: min(30vh, 300px);
+  max-width: 90vw;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 25px rgba(0,0,0,.12));
+}
+#screen-home .card { width: min(1000px, 100%); text-align: center; padding-block: clamp(14px, 2.5vh, 32px); }
+
+.badge-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(8px, 1.5vw, 16px);
+  margin: 6px 0 clamp(12px, 2.5vh, 24px);
+}
+.badge-btn {
+  width: clamp(56px, min(8vw, 10vh), 96px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 4px solid transparent;
+  background: var(--c, var(--blue));
+  color: #fff;
+  font: 800 clamp(30px, 4.5vw, 48px)/1 "Baloo 2", sans-serif;
+  padding-top: .12em;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0,0,0,.15);
+  transition: transform .15s, box-shadow .15s, opacity .15s;
+}
+.badge-btn:active { transform: scale(.94); }
+.badge-grid.has-choice .badge-btn { opacity: .45; }
+.badge-grid .badge-btn[aria-pressed="true"] {
+  opacity: 1;
+  transform: scale(1.12);
+  border-color: #fff;
+  box-shadow: 0 0 0 5px var(--navy), 0 10px 22px rgba(0,0,0,.25);
+}
+
+/* ---------- Boutons ---------- */
+.btn {
+  font: 800 clamp(20px, 2.4vw, 28px)/1 "Baloo 2", sans-serif;
+  border: 0;
+  border-radius: 999px;
+  padding: .7em 1.4em .55em;
+  cursor: pointer;
+  transition: transform .1s, opacity .2s;
+}
+.btn:active { transform: scale(.96); }
+.btn:disabled { opacity: .35; cursor: not-allowed; }
+.btn-xl { font-size: clamp(24px, 3.2vw, 38px); }
+.btn-primary {
+  color: #fff;
+  background: linear-gradient(135deg, var(--teal), var(--green));
+  box-shadow: 0 8px 20px rgba(21, 166, 160, .35);
+}
+.btn-light { background: #fff; color: var(--navy); box-shadow: inset 0 0 0 3px #d5dcf0; }
+.btn-ghost {
+  position: absolute; top: 12px; right: 12px;
+  background: transparent; border: 0; font-size: 28px; color: var(--muted);
+  cursor: pointer; opacity: .5; text-decoration: none;
+}
+.btn-admin { right: auto; left: 12px; opacity: .25; }
+
+/* ---------- Caméra ---------- */
+#screen-camera { background: #0e1638; }
+.stage {
+  position: relative;
+  width: min(100%, calc((100vh - 130px) * 1.5));
+  aspect-ratio: 3 / 2;
+}
+#live { width: 100%; height: 100%; display: block; border-radius: 12px; background: #fff; }
+.countdown {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font: 800 min(30vw, 40vh)/1 "Baloo 2", sans-serif;
+  color: #fff;
+  text-shadow: 0 6px 30px rgba(0,0,0,.6);
+  pointer-events: none;
+}
+.countdown.tick { animation: tick 1s ease-out; }
+@keyframes tick { from { transform: scale(1.6); opacity: 0; } 30% { opacity: 1; } to { transform: scale(.8); opacity: .2; } }
+.flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; border-radius: 12px; }
+.flash.on { animation: flash .6s ease-out; }
+@keyframes flash { from { opacity: 1; } to { opacity: 0; } }
+
+.toolbar { display: flex; align-items: center; justify-content: space-between; width: min(100%, 1100px); gap: 12px; }
+.toolbar .spacer, .toolbar #btn-back { flex: 0 0 180px; }
+
+/* ---------- Validation ---------- */
+.review {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  width: min(100%, 1500px);
+}
+.result {
+  flex: 1 1 60%;
+  min-width: 0;
+  max-height: calc(100vh - 32px);
+  object-fit: contain;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 12px 40px rgba(29, 42, 120, .2);
+}
+.form { flex: 0 1 440px; display: flex; flex-direction: column; gap: 18px; }
+.check { display: flex; gap: 14px; align-items: flex-start; font-size: 20px; line-height: 1.25; cursor: pointer; }
+.check input { width: 34px; height: 34px; flex: none; accent-color: var(--teal); margin: 0; }
+.check small, .label small, .hint { color: var(--muted); font-size: 15px; display: block; }
+.label { font-weight: 700; font-size: 20px; display: block; margin-bottom: 6px; }
+.label small { display: inline; }
+#email {
+  width: 100%;
+  font: 600 22px "Baloo 2", sans-serif;
+  padding: 12px 16px 8px;
+  border-radius: 14px;
+  border: 3px solid #d5dcf0;
+  outline: none;
+  -webkit-user-select: text; user-select: text;
+}
+#email:focus { border-color: var(--teal); }
+.actions { display: flex; gap: 12px; justify-content: space-between; }
+.actions .btn { flex: 1; white-space: nowrap; padding-inline: .8em; }
+.error { color: var(--red); font-weight: 700; margin: 0; font-size: 18px; }
+#screen-camera .error { color: #ffb4b0; text-align: center; max-width: 700px; }
+
+/* ---------- Merci ---------- */
+.done { text-align: center; max-width: 640px; }
+.done p { font-size: 22px; color: var(--muted); }
+.big-emoji { font-size: 90px; line-height: 1; }
+
+@media (max-width: 900px), (orientation: portrait) {
+  .review { flex-direction: column; overflow-y: auto; max-height: 100%; }
+  .result { max-height: 50vh; width: 100%; }
+  .form { flex: none; width: 100%; }
+  .toolbar .spacer, .toolbar #btn-back { flex-basis: auto; }
+}

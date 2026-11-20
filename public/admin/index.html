@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Gestion des photos</title>
+  <style>
+    :root { --navy:#1d2a78; --teal:#15a6a0; --red:#e5322d; --muted:#5b6488; --bg:#f3f6fb; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: #1b2350; }
+    header { background: var(--navy); color: #fff; padding: 14px 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; position: sticky; top: 0; z-index: 2; }
+    header h1 { margin: 0; font-size: 21px; flex: 1 1 auto; }
+    header a { color: #fff; }
+    main { padding: 16px; max-width: 1400px; margin: 0 auto; }
+    .stats { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+    .stat { background: #fff; border-radius: 12px; padding: 10px 16px; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+    .stat b { display: block; font-size: 26px; color: var(--navy); }
+    .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+    button, a.btn { font: inherit; font-size: 16px; border: 0; border-radius: 10px; padding: 10px 14px; cursor: pointer; text-decoration: none; display: inline-block; }
+    button:disabled { opacity: .4; cursor: default; }
+    .primary { background: var(--teal); color: #fff; }
+    .light { background: #fff; color: var(--navy); box-shadow: inset 0 0 0 2px #d5dcf0; }
+    .danger { background: #fff; color: var(--red); box-shadow: inset 0 0 0 2px #f3c3c1; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+    .item { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.06); position: relative; }
+    .item.selected { box-shadow: 0 0 0 4px var(--teal); }
+    .item img { width: 100%; display: block; aspect-ratio: 3/2; object-fit: cover; cursor: pointer; }
+    .item .pick { position: absolute; top: 8px; left: 8px; width: 30px; height: 30px; accent-color: var(--teal); }
+    .meta { padding: 10px 12px; font-size: 14px; display: flex; flex-direction: column; gap: 8px; }
+    .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .tag { border-radius: 999px; padding: 2px 10px; font-size: 13px; font-weight: 600; }
+    .ok { background: #dcf5e4; color: #17773a; }
+    .no { background: #fde4e3; color: #a3221e; }
+    .muted { color: var(--muted); }
+    .empty { text-align: center; color: var(--muted); padding: 60px 0; font-size: 18px; }
+    .notice { background: #fff7e0; border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; font-size: 14px; }
+    [hidden] { display: none !important; }
+    #lock { display: flex; min-height: 100vh; align-items: center; justify-content: center; padding: 16px; }
+    #lock form { background: #fff; padding: 28px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,.1); display: flex; flex-direction: column; gap: 14px; width: min(360px, 100%); text-align: center; }
+    #lock input { font-size: 28px; text-align: center; padding: 10px; border-radius: 10px; border: 2px solid #d5dcf0; letter-spacing: .3em; }
+    .error { color: var(--red); margin: 0; }
+    dialog { border: 0; border-radius: 12px; padding: 0; max-width: 96vw; max-height: 96vh; }
+    dialog img { display: block; max-width: 94vw; max-height: 86vh; }
+    dialog form { padding: 8px; text-align: right; }
+  </style>
+</head>
+<body>
+  <section id="lock">
+    <form id="lock-form">
+      <h2 style="margin:0;color:var(--navy)">🔒 Gestion des photos</h2>
+      <input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="Code" required>
+      <p id="lock-error" class="error" hidden></p>
+      <button class="primary" type="submit">Déverrouiller</button>
+      <a href="../" class="muted">← Retour au photocall</a>
+    </form>
+  </section>
+
+  <div id="app" hidden>
+    <header>
+      <h1>📸 Photos enregistrées sur cet iPad</h1>
+      <a href="../">← Retour au photocall</a>
+    </header>
+    <main>
+      <div id="persist-notice" class="notice" hidden>
+        ⚠️ Pour éviter que Safari n'efface les photos, ajoutez le photocall à l'écran d'accueil
+        (bouton Partager, puis « Sur l'écran d'accueil ») et exportez les photos après chaque soirée.
+      </div>
+      <div class="stats" id="stats"></div>
+      <div class="bar">
+        <label><input type="checkbox" id="only-consent"> Uniquement les photos publiables</label>
+      </div>
+      <div class="bar">
+        <button class="light" id="select-consent">Sélectionner les publiables</button>
+        <button class="light" id="select-none">Tout désélectionner</button>
+        <button class="primary" id="share" disabled>Partager / Enregistrer dans Photos</button>
+        <button class="light" id="zip" disabled>⬇ Télécharger en .zip</button>
+        <button class="light" id="retry" hidden>✉ Renvoyer les e-mails en attente</button>
+        <button class="danger" id="delete-selected" disabled>Supprimer la sélection</button>
+      </div>
+      <div class="grid" id="grid"></div>
+    </main>
+  </div>
+
+  <dialog id="viewer"><img id="viewer-img" alt=""><form method="dialog"><button class="light">Fermer</button></form></dialog>
+
+  <script src="../vendor/fflate.min.js"></script>
+  <script src="../db.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
